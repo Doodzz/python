@@ -18,14 +18,14 @@ pygame.display.set_caption("Snake")
 
 
 class Snake:
-    print()
+    print() #temp
 
 class Food:
-    print()
+    print() #temp
 
 
 class powerups:
-    print()
+    print() # temp
     
 
 running=True
