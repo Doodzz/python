@@ -16,6 +16,13 @@ gray=(50,50,50)
 screen=pygame.display.set_mode((x, y))
 pygame.display.set_caption("Snake")
 
+apple_image = pygame.image.load("C:/piss code/.vs/shitstain/testing.py/Assets/apple.png")
+#apple_image = pygame.transform.scale(apple_image)
+
+snake_head_image = pygame.image.load("C:/piss code/.vs/shitstain/testing.py/Assets/snake.png")
+snake_body_image = pygame.image.load("C:/piss code/.vs/shitstain/testing.py/Assets/snake_body.png")
+#snake_body_image = pygame.transform.scale(snake_body_image)
+
 
 class Snake:
     print() #temp
@@ -33,7 +40,7 @@ while running:
     snake = Snake()
     food = Food()
     score = 0
-    speed = 5  # Startfart
+    speed = 5  
     game_over = False
     
     while not game_over:
