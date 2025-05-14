@@ -84,7 +84,7 @@ while running:
     snake = Snake()
     food = Food()
     score = 0
-    speed = 5  # Startfart
+    speed = 5 
     game_over = False
     
     while not game_over:
