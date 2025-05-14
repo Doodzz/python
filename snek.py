@@ -82,22 +82,16 @@ while running:
     snake = Snake()
     food = Food()
     score = 0
-<<<<<<< Updated upstream
-    speed = 5 
-=======
     speed = 5  
->>>>>>> Stashed changes
     game_over = False
     
     while not game_over:
         screen.fill(Black)
-<<<<<<< Updated upstream
-=======
         
         for line_x in range(0, x, Block_size):
             pygame.draw.line(screen, Grey, (line_x, 0), (line_x, y))
         for line_y in range(0, y, Block_size):
-            pygame.draw.line(screen, Grey, (0, line_y), (x, line_y))
+            pygame.draw.line(screen, Grey, (0, line_y), (x, line_yy))
         
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -165,4 +159,3 @@ while running:
                     waiting = False
 
 pygame.quit()
->>>>>>> Stashed changes
