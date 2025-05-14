@@ -2,8 +2,8 @@ import pygame
 import random
 import sys
 
-x=500 #width
-y=500 #height
+x=500 #Width
+y=500 #Height
 Block_size=20
 grid_x=x//Block_size
 grid_y=y//Block_size
@@ -18,7 +18,7 @@ except FileNotFoundError:
 
 White=(255,255,255)
 Black=(0,0,0)
-gray=(50,50,50)
+Grey=(50,50,50)
 Green=(0,255,0)
 red=(255,0,0)
 blue=(0,0,255)
@@ -33,8 +33,6 @@ apple_image = pygame.transform.scale(apple_image, (Block_size, Block_size))
 snake_head_image = pygame.image.load("C:/piss code/.vs/shitstain/testing.py/Assets/snake.png")
 snake_body_image = pygame.image.load("C:/piss code/.vs/shitstain/testing.py/Assets/snake_body.png")
 snake_body_image = pygame.transform.scale(snake_body_image, (Block_size * 1.5, Block_size * 1.5))
-
-
 
 
 class Snake:
@@ -84,8 +82,87 @@ while running:
     snake = Snake()
     food = Food()
     score = 0
+<<<<<<< Updated upstream
     speed = 5 
+=======
+    speed = 5  
+>>>>>>> Stashed changes
     game_over = False
     
     while not game_over:
         screen.fill(Black)
+<<<<<<< Updated upstream
+=======
+        
+        for line_x in range(0, x, Block_size):
+            pygame.draw.line(screen, Grey, (line_x, 0), (line_x, y))
+        for line_y in range(0, y, Block_size):
+            pygame.draw.line(screen, Grey, (0, line_y), (x, line_y))
+        
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+                game_over = True
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_UP and snake.direction != (0, Block_size):
+                    snake.direction = (0, -Block_size)
+                elif event.key == pygame.K_DOWN and snake.direction != (0, -Block_size):
+                    snake.direction = (0, Block_size)
+                elif event.key == pygame.K_LEFT and snake.direction != (Block_size, 0):
+                    snake.direction = (-Block_size, 0)
+                elif event.key == pygame.K_RIGHT and snake.direction != (-Block_size, 0):
+                    snake.direction = (Block_size, 0)
+        
+        snake.move()
+        
+        if snake.body[0] == food.position:
+            snake.grow()
+            food.respawn()
+            score += 1
+            speed = min(15, speed + 1)  
+        
+        if snake.check_collision():
+            game_over = True
+        
+        screen.blit(apple_image, food.position)
+        for index, segment in enumerate(snake.body):
+            if index == 0:
+                rotated_head = pygame.transform.rotate(snake_head_image, 90 if snake.direction == (0, -Block_size) else -90 if snake.direction == (0, Block_size) else 180 if snake.direction == (-Block_size, 0) else 0)
+                rotated_head = pygame.transform.scale(rotated_head, (Block_size * 1.2, Block_size * 1.2))
+                screen.blit(rotated_head, segment)
+            else:
+                screen.blit(snake_body_image, segment)
+        
+        score_text = font.render(f"Score: {score}", True, White)
+        high_score_text = font.render(f"High Score: {high_score}", True, White)
+        screen.blit(score_text, (x - 120, 10))
+        screen.blit(high_score_text, (x - 160, 30))
+        
+        pygame.display.flip()
+        clock.tick(speed)
+    
+    if score > high_score:
+        high_score = score
+        with open("highscore.txt", "w") as file:
+            file.write(str(score))
+    
+    screen.fill(Black)
+    game_over_text = font.render("Game Over! Play again? (Y/N)", True, White)
+    screen.blit(game_over_text, (x//2 - 120, y//2))
+    pygame.display.flip()
+    
+    waiting = True
+    while waiting:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+                waiting = False
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_y:
+                    waiting = False
+                elif event.key == pygame.K_n:
+                    running = False
+                    waiting = False
+
+pygame.quit()
+>>>>>>> Stashed changes
