@@ -31,6 +31,7 @@ apple_image = pygame.image.load("C:/piss code/.vs/shitstain/testing.py/Assets/ap
 apple_image = pygame.transform.scale(apple_image, (Block_size, Block_size))
 
 snake_head_image = pygame.image.load("C:/piss code/.vs/shitstain/testing.py/Assets/snake.png")
+snake_head_image_original = pygame.transform.scale(snake_head_image, (Block_size, Block_size))
 snake_body_image = pygame.image.load("C:/piss code/.vs/shitstain/testing.py/Assets/snake_body.png")
 snake_body_image = pygame.transform.scale(snake_body_image, (Block_size * 1.5, Block_size * 1.5))
 
@@ -72,6 +73,23 @@ class Food:
                          random.randint(0, (y//Block_size)-1) * Block_size)
 
 
+class PowerUp:
+    Types = ["2x", "slow", "fast"]
+    Color = {"2x": red, "slow": blue, "fast": Green}
+
+    def __init__(self):
+        self.type = random.choice(self.Types)
+        self.position = self.random_position()
+
+    def random_position(self):
+        return (random.randint(0, (x//Block_size)-1) * Block_size,
+                random.randint(0, (y//Block_size)-1) * Block_size)
+
+    def respawn(self):
+        self.type = random.choice(self.Types)
+        self.position = self.random_position()
+
+
 pygame.init()
 screen = pygame.display.set_mode((x, y))
 clock = pygame.time.Clock()
@@ -81,17 +99,21 @@ running = True
 while running:
     snake = Snake()
     food = Food()
+    powerup = PowerUp()
+    powerup_end_time = 0
     score = 0
     speed = 5  
+    Multiplier = 1
     game_over = False
     
     while not game_over:
         screen.fill(Black)
-        
+
+        #Rutnät
         for line_x in range(0, x, Block_size):
             pygame.draw.line(screen, Grey, (line_x, 0), (line_x, y))
         for line_y in range(0, y, Block_size):
-            pygame.draw.line(screen, Grey, (0, line_y), (x, line_yy))
+            pygame.draw.line(screen, Grey, (0, line_y), (x, line_y))
         
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -106,23 +128,43 @@ while running:
                     snake.direction = (-Block_size, 0)
                 elif event.key == pygame.K_RIGHT and snake.direction != (-Block_size, 0):
                     snake.direction = (Block_size, 0)
-        
         snake.move()
         
         if snake.body[0] == food.position:
             snake.grow()
             food.respawn()
-            score += 1
+            score += 1 * Multiplier
             speed = min(15, speed + 1)  
         
+        if snake.body[0] == powerup.position:
+            if powerup.type == "2x":
+                Multiplier = 2
+                powerup_end_time = pygame.time.get_ticks() + 5000
+            elif powerup.type == "slow":
+                speed = max(2, speed - 2)
+            elif powerup.type == "fast":
+                speed = min(20, speed + 3)
+            powerup.respawn()
+
+        if pygame.time.get_ticks() > powerup_end_time:
+            Multiplier = 1
+
         if snake.check_collision():
             game_over = True
         
         screen.blit(apple_image, food.position)
+        pygame.draw.rect(screen, PowerUp.Color[powerup.type], pygame.Rect(powerup.position, (Block_size, Block_size)))
+        
         for index, segment in enumerate(snake.body):
             if index == 0:
-                rotated_head = pygame.transform.rotate(snake_head_image, 90 if snake.direction == (0, -Block_size) else -90 if snake.direction == (0, Block_size) else 180 if snake.direction == (-Block_size, 0) else 0)
-                rotated_head = pygame.transform.scale(rotated_head, (Block_size * 1.2, Block_size * 1.2))
+                if snake.direction == (Block_size, 0):
+                    rotated_head = snake_head_image_original
+                elif snake.direction == (-Block_size, 0):
+                    rotated_head = pygame.transform.rotate(snake_head_image_original, 180)
+                elif snake.direction == (0, -Block_size):
+                    rotated_head = pygame.transform.rotate(snake_head_image_original, 90)
+                elif snake.direction == (0, Block_size):
+                    rotated_head = pygame.transform.rotate(snake_head_image_original, -90)
                 screen.blit(rotated_head, segment)
             else:
                 screen.blit(snake_body_image, segment)
